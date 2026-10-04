@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Knuckle Joint Solver</title>
+  <meta name="description" content="Knuckle Joint design and failure analysis calculator with step-by-step calculations.">
+  <meta name="theme-color" content="#0b1220">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Knuckle Joint Solver</h1>
+      <p class="subtitle">Checks common failure modes and generates a worked solution (educational use).</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Inputs</h2>
+      <form id="form" class="grid">
+        <div class="field"><label for="P">Axial tensile load, P (kN)</label><input id="P" type="number" step="any" value="50"></div>
+        <div class="field"><label for="d">Rod diameter, d (mm)</label><input id="d" type="number" step="any" value="25"></div>
+        <div class="field"><label for="dp">Knuckle pin diameter, dₚ (mm)</label><input id="dp" type="number" step="any" value="35"></div>
+        <div class="field"><label for="t">Single eye thickness, t (mm)</label><input id="t" type="number" step="any" value="20"></div>
+        <div class="field"><label for="t1">Each fork thickness, t₁ (mm)</label><input id="t1" type="number" step="any" value="12"></div>
+        <div class="field"><label for="D">Outside diameter/width at eye, D (mm)</label><input id="D" type="number" step="any" value="55"></div>
+        <div class="field"><label for="sigT">Permissible tensile stress, σₜ (MPa)</label><input id="sigT" type="number" step="any" value="75"></div>
+        <div class="field"><label for="tau">Permissible shear stress, τ (MPa)</label><input id="tau" type="number" step="any" value="50"></div>
+        <div class="field"><label for="sigC">Permissible crushing/bearing stress, σc (MPa)</label><input id="sigC" type="number" step="any" value="150"></div>
+
+        <div class="field field-wide">
+          <label class="checkline">
+            <input id="includeBending" type="checkbox" checked>
+            Include pin bending check (uses σₜ as bending allowable)
+          </label>
+          <div class="hint">Bending model: pin as simply-supported beam with central load P at eye center; reactions P/2 at fork centers.</div>
+        </div>
+
+        <div class="field field-wide">
+          <label for="spanModel">Pin bending span assumption</label>
+          <select id="spanModel">
+            <option value="centers" selected>Between fork centers: L = t + t₁</option>
+            <option value="outer">Between fork outer faces (more conservative): L = t + 2t₁</option>
+          </select>
+        </div>
+
+        <div class="actions field-wide">
+          <button type="submit" class="primary">Calculate</button>
+          <button type="button" id="resetExample">Reset to example</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Results</h2>
+      <div class="table-wrap">
+        <table id="resultsTable">
+          <thead><tr><th>Check / Failure mode</th><th>Actual</th><th>Allowable</th><th>FOS</th><th>Status</th></tr></thead>
+          <tbody id="resultsBody"></tbody>
+        </table>
+      </div>
+      <div class="note">Units: stresses in MPa (N/mm²). Calculations assume static loading and typical knuckle joint idealizations.</div>
+    </section>
+
+    <section class="card">
+      <h2>Minimum required (holding other inputs fixed)</h2>
+      <div id="requiredBox" class="required"></div>
+      <div class="note">These “minimum required” values are algebraic back-calculations from each criterion; practical design may require iteration and code/standard checks.</div>
+    </section>
+
+    <section class="card">
+      <h2>Worked solution (step-by-step)</h2>
+      <pre id="steps" class="steps"></pre>
+    </section>
+
+    <footer class="footer">
+      <p><strong>Disclaimer:</strong> Educational tool only. Real designs should consider fatigue, stress concentrations, fits/clearances, manufacturing, standards, and professional review.</p>
+    </footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
